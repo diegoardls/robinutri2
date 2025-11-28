@@ -1,0 +1,61 @@
+CREATE DATABASE IF NOT EXISTS robinutri;
+USE robinutri;
+
+-- -------------------
+-- Tabla: cuenta
+-- -------------------
+CREATE TABLE cuenta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- -------------------
+-- Tabla: perfiles
+-- -------------------
+CREATE TABLE perfiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cuenta_id INT NOT NULL,
+    nombre VARCHAR(120) NOT NULL,
+    foto VARCHAR(255),
+    bio TEXT,
+    FOREIGN KEY (cuenta_id) REFERENCES cuenta(id) ON DELETE CASCADE
+);
+
+-- -------------------
+-- Tabla: chats
+-- -------------------
+CREATE TABLE chats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario1_id INT NOT NULL,
+    usuario2_id INT NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario1_id) REFERENCES cuenta(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario2_id) REFERENCES cuenta(id) ON DELETE CASCADE
+);
+
+-- -------------------
+-- Tabla: chat_messages
+-- -------------------
+CREATE TABLE chat_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    chat_id INT NOT NULL,
+    emisor_id INT NOT NULL,
+    mensaje TEXT NOT NULL,
+    enviado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE,
+    FOREIGN KEY (emisor_id) REFERENCES cuenta(id) ON DELETE CASCADE
+);
+
+-- -------------------
+-- Tabla: mensajes
+-- (opcional – si la usas aparte de chat_messages)
+-- -------------------
+CREATE TABLE mensajes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cuenta_id INT NOT NULL,
+    contenido TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cuenta_id) REFERENCES cuenta(id) ON DELETE CASCADE
+);
